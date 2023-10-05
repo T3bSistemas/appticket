@@ -38,7 +38,7 @@ public class facturacion {
 	
 	@GetMapping({"/",""})
 	public String inicio(){	
-		return "Facturacion T3B Ticket V 3.0";
+		return "Facturacion T3B Ticket V 1.0";
 	}
 	
 	@PostMapping("/agregarTicket")
