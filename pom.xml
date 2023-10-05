@@ -31,6 +31,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+            <groupId>t3b.dbconnection</groupId>
+            <artifactId>jcon4d</artifactId>
+            <version>1.0.0</version>
+        </dependency> 
 	</dependencies>
 
 	<build>
