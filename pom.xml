@@ -32,12 +32,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.abc.xyz</groupId>
-			<artifactId>my-artifact-id</artifactId>
-			<version>1.0.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/librerias/jconn4.jar</systemPath>
-		</dependency>
+            <groupId>t3b.dbconnection</groupId>
+            <artifactId>jcon4d</artifactId>
+            <version>1.0.0</version>
+        </dependency> 
 	</dependencies>
 
 	<build>
@@ -46,7 +44,23 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-dependency-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <id>copy-dependencies</id>
+			            <phase>prepare-package</phase>
+			            <goals>
+			                <goal>copy-dependencies</goal>
+			            </goals>
+			            <configuration>
+			                <outputDirectory>${project.basedir}/librerias</outputDirectory>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+		</plugins>		
 	</build>
 
 </project>

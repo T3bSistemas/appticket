@@ -38,7 +38,7 @@ public class facturacion {
 	
 	@GetMapping({"/",""})
 	public String inicio(){	
-		return "Facturacion T3B Ticket V 1.0";
+		return "Facturacion T3B Ticket Appticket V 1.0";
 	}
 	
 	@PostMapping("/agregarTicket")
@@ -52,7 +52,7 @@ public class facturacion {
 					try {
 						RestTemplate 					restTemplate	= new RestTemplate();
 						HttpEntity<Ticket> 			    request 		= new HttpEntity<Ticket>(ticket);
-						ResponseEntity<ExisteFactura>	response 		= restTemplate.exchange("https://t3b-facturacion-das.azurewebsites.net/t3b-fact-das/existeFactura", HttpMethod.POST, request, new ParameterizedTypeReference<ExisteFactura>(){});
+						ResponseEntity<ExisteFactura>	response 		= restTemplate.exchange("https://appdashboard3b.azurewebsites.net/t3b-fact-das/existeFactura", HttpMethod.POST, request, new ParameterizedTypeReference<ExisteFactura>(){});
 						//ResponseEntity<ExisteFactura>	response 		= restTemplate.exchange("http://localhost:8080/t3b-fact-das/existeFactura", HttpMethod.POST, request, new ParameterizedTypeReference<ExisteFactura>(){});
 						ExisteFactura					respuesta		= response.getBody();
 						if(respuesta.getExiste() == 0) {							
@@ -98,7 +98,7 @@ public class facturacion {
 							try {
 								restTemplate	= new RestTemplate();
 								HttpEntity<GenerarFactura> 		requestG 		= new HttpEntity<GenerarFactura>(genera);
-								ResponseEntity<Boolean> 	    responseG 		= restTemplate.exchange("https://t3b-facturacion-das.azurewebsites.net/t3b-fact-das/guardarFactura", HttpMethod.POST, requestG, new ParameterizedTypeReference<Boolean>(){});
+								ResponseEntity<Boolean> 	    responseG 		= restTemplate.exchange("https://appdashboard3b.azurewebsites.net/t3b-fact-das/guardarFactura", HttpMethod.POST, requestG, new ParameterizedTypeReference<Boolean>(){});
 								//ResponseEntity<Boolean> 	    responseG 		= restTemplate.exchange("http://localhost:8080/t3b-fact-das/guardarFactura", HttpMethod.POST, requestG, new ParameterizedTypeReference<Boolean>(){});
 								if(responseG.getBody()) {
 									for (Ticket ticket : tickets) {
@@ -109,7 +109,7 @@ public class facturacion {
 											restTemplate	= new RestTemplate();
 											HttpEntity<List<Solicitudes>> 	requestS 		= new HttpEntity<List<Solicitudes>>(solicitudes);
 											//ResponseEntity<Boolean> 		responseS 		= 
-											restTemplate.exchange("https://t3b-facturacion-das.azurewebsites.net/t3b-fact-das/guardarSolicitud", HttpMethod.POST, requestS, new ParameterizedTypeReference<Boolean>(){});
+											restTemplate.exchange("https://appdashboard3b.azurewebsites.net/t3b-fact-das/guardarSolicitud", HttpMethod.POST, requestS, new ParameterizedTypeReference<Boolean>(){});
 											//restTemplate.exchange("http://localhost:8080/t3b-fact-das/guardarSolicitud", HttpMethod.POST, requestS, new ParameterizedTypeReference<Boolean>(){});
 											//System.out.println(responseS.getBody()); 
 										} catch (Exception e) {
@@ -157,7 +157,7 @@ public class facturacion {
 									restTemplate	= new RestTemplate();
 									HttpEntity<List<Solicitudes>> 	requestS 		= new HttpEntity<List<Solicitudes>>(solicitudes);
 									//ResponseEntity<Boolean> 		responseS 		= 
-									restTemplate.exchange("https://t3b-facturacion-das.azurewebsites.net/t3b-fact-das/guardarSolicitud", HttpMethod.POST, requestS, new ParameterizedTypeReference<Boolean>(){});
+									restTemplate.exchange("https://appdashboard3b.azurewebsites.net/t3b-fact-das/guardarSolicitud", HttpMethod.POST, requestS, new ParameterizedTypeReference<Boolean>(){});
 									//restTemplate.exchange("http://localhost:8080/t3b-fact-das/guardarSolicitud", HttpMethod.POST, requestS, new ParameterizedTypeReference<Boolean>(){});
 									//System.out.println(responseS.getBody()); 
 								} catch (Exception e) {
@@ -182,7 +182,7 @@ public class facturacion {
 						RestTemplate 					restTemplate	= new RestTemplate();
 						HttpEntity<List<Solicitudes>> 	request 		= new HttpEntity<List<Solicitudes>>(solicitudes);
 						//ResponseEntity<Boolean> 		response 		= 
-						restTemplate.exchange("https://t3b-facturacion-das.azurewebsites.net/t3b-fact-das/guardarSolicitud", HttpMethod.POST, request, new ParameterizedTypeReference<Boolean>(){});
+						restTemplate.exchange("https://appdashboard3b.azurewebsites.net/t3b-fact-das/guardarSolicitud", HttpMethod.POST, request, new ParameterizedTypeReference<Boolean>(){});
 						//restTemplate.exchange("http://localhost:8080/t3b-fact-das/guardarSolicitud", HttpMethod.POST, request, new ParameterizedTypeReference<Boolean>(){});
 						//System.out.println(response.getBody()); 
 					}
