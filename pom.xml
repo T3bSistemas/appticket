@@ -38,27 +38,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-dependency-plugin</artifactId>
-			    <executions>
-			        <execution>
-			            <id>copy-dependencies</id>
-			            <phase>prepare-package</phase>
-			            <goals>
-			                <goal>copy-dependencies</goal>
-			            </goals>
-			            <configuration>
-			                <outputDirectory>${project.basedir}/librerias</outputDirectory>
-			            </configuration>
-			        </execution>
-			    </executions>
-			</plugin>
-			<plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
+				<executions>
                     <execution>
                         <id>repackage</id>
                         <phase>package</phase>
@@ -70,7 +50,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+			</plugin>
 		</plugins>		
 	</build>
 
