@@ -38,7 +38,7 @@ public class facturacion {
 	
 	@GetMapping({"/",""})
 	public String inicio(){	
-		return "Facturacion T3B Ticket Appticket V 1.0";
+		return "Facturacion T3B Ticket V1.0";
 	}
 	
 	@PostMapping("/agregarTicket")
@@ -81,7 +81,7 @@ public class facturacion {
 				try {
 					RestTemplate 					restTemplate	= new RestTemplate();
 					HttpEntity<GenerarFactura> 		request 		= new HttpEntity<GenerarFactura>(genera);
-					ResponseEntity<List<Ticket>> 	response 		= restTemplate.exchange("https://t3b-facturacion.azurewebsites.net/t3b-facturacion/generarFactura", HttpMethod.POST, request, new ParameterizedTypeReference<List<Ticket>>(){});
+					ResponseEntity<List<Ticket>> 	response 		= restTemplate.exchange("https://appfactura.azurewebsites.net/t3b-facturacion/generarFactura", HttpMethod.POST, request, new ParameterizedTypeReference<List<Ticket>>(){});
 					//ResponseEntity<List<Ticket>> 	response 		= restTemplate.exchange("http://localhost:8083/t3b-facturacion/generarFactura", HttpMethod.POST, request, new ParameterizedTypeReference<List<Ticket>>(){});
 													tickets 		= response.getBody();	
 					if(tickets.size() > 0) {
