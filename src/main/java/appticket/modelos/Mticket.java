@@ -3,6 +3,7 @@ package appticket.modelos;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -53,20 +54,67 @@ public class Mticket implements Iticket{
 					}else {
 						return null;
 					}					
-				}		
+				}	
+				
+				try {
+					if(rs != null)
+						rs.close();
+					if(ps != null)
+						ps.close();
+					if(con != null)
+						con.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}finally {
 			cerrarConexion();
+			cerrarConexion();
+		}
+		return ticket;
+	}
+
+	@Override
+	public Ticket getTicketDetalle(Ticket ticket) {
+		try {
+			List<TicketDetalle> detalle = new ArrayList<TicketDetalle>();
+			boolean	ecom 	= ticket.getCaja().equals("99");
+			con2 	= (ecom)? c.getConexionEcom(): c.getConexionR(ticket.getConexion());
+			ps 		= con2.prepareStatement((ecom)?Cticket.ECMFNFACTURAECOMDETALLE.toString():Cticket.PVMOVIMIENTOSDETIN.toString());
+			ps.setInt(	 1, ticket.getTienda());
+			ps.setString(2, ticket.getFechaCompra());
+			ps.setString(3, ticket.getCaja());
+			ps.setString(4, ticket.getTicket());
+			rs		= ps.executeQuery();																					
+			while(rs.next()) {				
+				detalle.add(new TicketDetalle(rs.getString("iclave"), rs.getInt("atmcant"), rs.getDouble("atmventa"), rs.getString("iv_clave"), rs.getString("ie_clave"), (ecom)?"":rs.getString("atmdesc"), (ecom)?"":rs.getString("gclave"), (ecom)?"":rs.getString("lclave")));
+			}
+			ticket.setDetalle(detalle);
+			try {
+				if(rs != null)
+					rs.close();
+				if(ps != null)
+					ps.close();
+				if(con2 != null)
+					con2.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			cerrarConexion();
+			cerrarConexion();
 		}
 		return ticket;
 	}
 	
 	@Override
-	public DetalleTickets getTicketDetalle(List<Ticket> tickets) {
-		try {
+	public DetalleTickets getTicketsDetalles(List<Ticket> tickets) {
+		try {			
 			for (Ticket ticket : tickets) {											
 				try {
 					con 	= c.getConexionS(1);
@@ -86,44 +134,46 @@ public class Mticket implements Iticket{
 								String temail		=	rs.getString("temail");
 								if(!isNull(tdir) && !isNull(tncrvendflag) && !isNull(temail)) {
 									ticket.setTicketAdi(claveSAT, tdir, tncrvendflag, temail);
+									List<TicketDetalle> Listdetalle = new ArrayList<TicketDetalle>();;
 									try {
-										boolean	ecom 	= ticket.getCaja().equals("99");
-												con2 	= (ecom)? c.getConexionEcom(): c.getConexionR(ticket.getConexion());
-												ps 		= con2.prepareStatement((ecom)?Cticket.ECMFNFACTURAECOMDETALLE.toString():Cticket.PVMOVIMIENTOSDETIN.toString());
-										ps.setInt(	 1, ticket.getTienda());
-										ps.setString(2, ticket.getFechaCompra());
-										ps.setString(3, ticket.getCaja());
-										ps.setString(4, ticket.getTicket());
-										rs		= ps.executeQuery();																					
-										while(rs.next()) {
-											String  iclave		= rs.getString("iclave");
-											Integer atmcant		= rs.getInt("atmcant");
-											Double 	atmventa	= rs.getDouble("atmventa");
-											if( atmcant > 0 && atmventa > 0d) {	
-												try {
-													ps2 	= con.prepareStatement(Cticket.IVAIEPS.toString());
-													ps2.setString(1, iclave);
-													rs2	= ps2.executeQuery();
-													if(rs2.next()) {
-														String CClaveUnidad 	= rs2.getString("c_ClaveUnidad");
-														String CClaveProdServ	= rs2.getString("c_ClaveProdServ");
-														ticket.AgrDetalle(new TicketDetalle(iclave, atmcant, atmventa, rs.getString("iv_clave"), rs.getString("ie_clave"), rs2.getString("idesc"), rs2.getString("iunidad"), CClaveUnidad.equals("") ?"H87":CClaveUnidad , CClaveProdServ.equals("") ?"01010101":CClaveProdServ, rs2.getString("iv_factor"), rs2.getString("ie_factor"), atmventa*rs2.getDouble("iv_factor"), atmventa*rs2.getDouble("ie_factor")));
-													}else {
-														return new DetalleTickets(9, "Problemas de datos, detalle ticket: IVA y IEPS Tda:"+ticket.getTienda()+" Tik:"+ticket.getTicket()+" "+iclave, null);
+										ticket = getTicketDetalle(ticket);
+										if(ticket.getDetalles().size() > 0) {
+											con 	= c.getConexionS(1);
+											for (TicketDetalle detalle : ticket.getDetalles()) {
+												if( detalle.getAtmacant() > 0 && detalle.getAtmventa()> 0d) {	
+													try {
+														ps2 	= con.prepareStatement(Cticket.IVAIEPS.toString());
+														ps2.setString(1, detalle.getIclave());
+														rs2	= ps2.executeQuery();
+														if(rs2.next()) {
+															String CClaveUnidad 	= rs2.getString("c_ClaveUnidad");
+															String CClaveProdServ	= rs2.getString("c_ClaveProdServ");
+															if(detalle.getAtmdesc() != null && detalle.getAtmdesc().equals("PS")) {
+																	continue;														
+															}else {
+																Listdetalle.add(new TicketDetalle(detalle.getIclave(), detalle.getAtmacant(), detalle.getAtmventa(), detalle.getIvClave(), detalle.getIeClave(), rs2.getString("idesc"), rs2.getString("iunidad"), CClaveUnidad.equals("") ?"H87":CClaveUnidad , CClaveProdServ.equals("") ?"01010101":CClaveProdServ, rs2.getString("iv_factor"), rs2.getString("ie_factor"), detalle.getAtmventa()*rs2.getDouble("iv_factor"), detalle.getAtmventa()*rs2.getDouble("ie_factor"), detalle.getAtmdesc(), detalle.getGclave(), detalle.getLclave()));
+																//ticket.AgrDetalle(new TicketDetalle(iclave, atmcant, atmventa, rs.getString("iv_clave"), rs.getString("ie_clave"), rs2.getString("idesc"), rs2.getString("iunidad"), CClaveUnidad.equals("") ?"H87":CClaveUnidad , CClaveProdServ.equals("") ?"01010101":CClaveProdServ, rs2.getString("iv_factor"), rs2.getString("ie_factor"), atmventa*rs2.getDouble("iv_factor"), atmventa*rs2.getDouble("ie_factor"), atmdesc, gclave, lclave));
+															}														
+														} else {
+															return new DetalleTickets(9, "Problemas de datos, detalle ticket: IVA y IEPS Tda:"+ticket.getTienda()+" Tik:"+ticket.getTicket()+" "+detalle.getIclave(), null);
+														}
+													} catch (Exception e) {
+														e.printStackTrace();
+														return new DetalleTickets(8, "Problemas de datos, detalle ticket: IVA y IEPS Tda:"+ticket.getTienda()+" Tik:"+ticket.getTicket()+" "+detalle.getIclave(), null);
 													}
-												} catch (Exception e) {
-													e.printStackTrace();
-													return new DetalleTickets(8, "Problemas de datos, detalle ticket: IVA y IEPS Tda:"+ticket.getTienda()+" Tik:"+ticket.getTicket()+" "+iclave, null);
-												}														
-											}											
-										}
+												}
+											}
+										} 									
 										
-										if(ticket.getDetalles() == null || ticket.getDetalles().size() == 0) {
-											return new DetalleTickets(7, "Problemas de datos, detalle ticket: ATC Y ATV < 0 o IVA IEPS NULL  Tda:"+ticket.getTienda()+" Tik:"+ticket.getTicket(), null);
-										}
 									} catch (Exception e) {
 										e.printStackTrace();	
 										return new DetalleTickets(6, "Problemas de datos, detalle ticket: Tda:"+ticket.getTienda()+" Tik:"+ticket.getTicket(), null);
+									}
+									
+									if(Listdetalle != null && Listdetalle.size() > 0) {
+										ticket.setDetalle(Listdetalle);										
+									}else {
+										return new DetalleTickets(7, "Problemas de datos, detalle ticket: ATC Y ATV < 0 o IVA IEPS NULL  Tda:"+ticket.getTienda()+" Tik:"+ticket.getTicket(), null);
 									}
 								}else {
 									return new DetalleTickets(5, "Problemas de datos, codigo postal y/o serie de factura: Tda:"+ticket.getTienda()+" Tik:"+ticket.getTicket(), null);
@@ -145,7 +195,10 @@ public class Mticket implements Iticket{
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			cerrarConexion();
 		}
+		 
 		return new DetalleTickets(0, "", tickets);
 	}
 	

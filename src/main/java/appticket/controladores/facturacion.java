@@ -1,6 +1,7 @@
 package appticket.controladores;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,32 @@ public class facturacion {
 	
 	@GetMapping({"/",""})
 	public String inicio(){	
-		return "Facturacion T3B Ticket V1.0";
+		return "Facturacion T3B Ticket V2.0";
+	}
+	
+	@PostMapping("/getRegion")
+	public Ticket getRegion(@RequestBody(required = true) Ticket ticket){	
+		Utilidades u = new Utilidades();
+		if( u.isNullNumber(ticket.getTienda()+"")) {
+			if(!u.isNull(ticket.getFechaCompra())) {
+				String region = rg.getRegion(1, ticket.getTienda(), ticket.getFechaCompra());
+				if(region != null && !region.equals("")) {
+					ticket.setRegion(region);
+					return ticket;
+				}			
+			}
+		}		
+		return null;
+	}
+	
+	@PostMapping("/getTicket")
+	public Ticket getTicket(@RequestBody(required = true) Ticket ticket){
+		ticket =  mt.getTicket(ticket);
+		if(ticket != null) {
+			ticket = mt.getTicketDetalle(ticket);
+			return ticket;						
+		}	
+		return null;
 	}
 	
 	@PostMapping("/agregarTicket")
@@ -53,14 +79,16 @@ public class facturacion {
 						RestTemplate 					restTemplate	= new RestTemplate();
 						HttpEntity<Ticket> 			    request 		= new HttpEntity<Ticket>(ticket);
 						ResponseEntity<ExisteFactura>	response 		= restTemplate.exchange("https://appdashboard3b.azurewebsites.net/t3b-fact-das/existeFactura", HttpMethod.POST, request, new ParameterizedTypeReference<ExisteFactura>(){});
-						//ResponseEntity<ExisteFactura>	response 		= restTemplate.exchange("http://localhost:8080/t3b-fact-das/existeFactura", HttpMethod.POST, request, new ParameterizedTypeReference<ExisteFactura>(){});
 						ExisteFactura					respuesta		= response.getBody();
-						if(respuesta.getExiste() == 0) {							
-							return mt.getTicket(respuesta.getTicket());
+						if(respuesta.getExiste() == 0) {
+							ticket =  mt.getTicket(respuesta.getTicket());
+							if(ticket != null) {
+								ticket = mt.getTicketDetalle(ticket);
+								return ticket;						
+							}		
 						}else {
 							return respuesta.getTicket();
-						}
-						
+						}						
 					} catch (Exception e) {
 						e.printStackTrace();						
 					}
@@ -74,7 +102,7 @@ public class facturacion {
 	public List<Ticket> generarFactura(@RequestBody(required = true) GenerarFactura genera){
 		String 			validacion 	= mt.validacionGeneraFactura(genera);
 		if(validacion.equals("")) {
-			DetalleTickets dtTick = mt.getTicketDetalle(genera.getTickets());
+			DetalleTickets dtTick = mt.getTicketsDetalles(genera.getTickets());
 			List<Ticket> tickets  = dtTick.getTickets();			
 			if(tickets != null && tickets.size() == genera.getTickets().size()) {
 				genera.setTickets(tickets);		
@@ -82,7 +110,6 @@ public class facturacion {
 					RestTemplate 					restTemplate	= new RestTemplate();
 					HttpEntity<GenerarFactura> 		request 		= new HttpEntity<GenerarFactura>(genera);
 					ResponseEntity<List<Ticket>> 	response 		= restTemplate.exchange("https://appfactura.azurewebsites.net/t3b-facturacion/generarFactura", HttpMethod.POST, request, new ParameterizedTypeReference<List<Ticket>>(){});
-					//ResponseEntity<List<Ticket>> 	response 		= restTemplate.exchange("http://localhost:8083/t3b-facturacion/generarFactura", HttpMethod.POST, request, new ParameterizedTypeReference<List<Ticket>>(){});
 													tickets 		= response.getBody();	
 					if(tickets.size() > 0) {
 						boolean segir = true;
@@ -95,11 +122,10 @@ public class facturacion {
 						List<Solicitudes> solicitudes = new ArrayList<Solicitudes>();
 						if(segir) {
 							genera.setTickets(tickets);	
-							try {
+							/*try {
 								restTemplate	= new RestTemplate();
 								HttpEntity<GenerarFactura> 		requestG 		= new HttpEntity<GenerarFactura>(genera);
 								ResponseEntity<Boolean> 	    responseG 		= restTemplate.exchange("https://appdashboard3b.azurewebsites.net/t3b-fact-das/guardarFactura", HttpMethod.POST, requestG, new ParameterizedTypeReference<Boolean>(){});
-								//ResponseEntity<Boolean> 	    responseG 		= restTemplate.exchange("http://localhost:8080/t3b-fact-das/guardarFactura", HttpMethod.POST, requestG, new ParameterizedTypeReference<Boolean>(){});
 								if(responseG.getBody()) {
 									for (Ticket ticket : tickets) {
 											solicitudes.add(new Solicitudes(1, genera.getFclientes().getRfc(), ticket.getTienda()+"", ticket.getCaja(), ticket.getTicket(), ticket.getFechaCompra(),"", "Facturada", ticket.getFolio()+" "+ticket.getTncrvendflag(), 0, "FINALIZADA", 0, "T3B"));
@@ -108,7 +134,6 @@ public class facturacion {
 										try {
 											restTemplate	= new RestTemplate();
 											HttpEntity<List<Solicitudes>> 	requestS 		= new HttpEntity<List<Solicitudes>>(solicitudes);
-											//ResponseEntity<Boolean> 		responseS 		= 
 											restTemplate.exchange("https://appdashboard3b.azurewebsites.net/t3b-fact-das/guardarSolicitud", HttpMethod.POST, requestS, new ParameterizedTypeReference<Boolean>(){});
 											//restTemplate.exchange("http://localhost:8080/t3b-fact-das/guardarSolicitud", HttpMethod.POST, requestS, new ParameterizedTypeReference<Boolean>(){});
 											//System.out.println(responseS.getBody()); 
@@ -120,8 +145,8 @@ public class facturacion {
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
-							}							
-						} else {							
+							}	*/						
+						} /*else {							
 							for (Ticket ticket : tickets) {
 								if(ticket.getXml() != null && !ticket.getXml().equals("")) {
 									int 	status_sol 	= 0;
@@ -165,14 +190,14 @@ public class facturacion {
 								}																
 							}
 							return tickets;	
-						}
-						
+						}*/
+						return tickets;
 						
 					}								
 				} catch (Exception e) {
 					e.printStackTrace();
 				}					
-			}else {
+			}/*else {
 				if(dtTick.getCodigo() > 0) {
 					List<Solicitudes> solicitudes = new ArrayList<Solicitudes>();
 					for (Ticket ticket : genera.getTickets()) {
@@ -187,7 +212,7 @@ public class facturacion {
 						//System.out.println(response.getBody()); 
 					}
 				}		
-			}
+			}*/
 		}
 		return null;
 	}

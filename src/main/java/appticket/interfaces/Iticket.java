@@ -9,7 +9,8 @@ import appticket.beans.Ticket;
 
 public interface Iticket {
 	public Ticket 			getTicket(Ticket ticket);
-	public DetalleTickets 	getTicketDetalle(List<Ticket> tickets);
+	public Ticket 	        getTicketDetalle(Ticket tickets);
+	public DetalleTickets 	getTicketsDetalles(List<Ticket> tickets);
 	public String 			validacionGeneraFactura(GenerarFactura genera);
 	public boolean 			isNull(String data);
 	public void 			cerrarConexion();

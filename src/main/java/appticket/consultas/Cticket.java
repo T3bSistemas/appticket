@@ -41,7 +41,10 @@ public enum Cticket {
 				 + "       Sum(atmcant)  AS atmcant,\r\n"
 				 + "       Sum(atmventa) AS atmventa,\r\n"
 				 + "       iv_clave,\r\n"
-				 + "       ie_clave\r\n"
+				 + "       ie_clave,\r\n"
+				 + "       atmdesc,\r\n"
+				 + "       gclave,\r\n"
+				 + "       lclave\r\n"
 				 + "FROM   pv_movimientos_det_in\r\n"
 				 + "WHERE  tclave = ?\r\n"
 				 + "       AND fecha = ?\r\n"
@@ -54,7 +57,10 @@ public enum Cticket {
 				 + "          caja,\r\n"
 				 + "          iclave,\r\n"
 				 + "          iv_clave,\r\n"
-				 + "          ie_clave\r\n"
+				 + "          ie_clave,\r\n"
+				 + "          atmdesc,\r\n"
+				 + "          gclave,\r\n"
+				 + "          lclave\r\n"
 				 + "ORDER  BY iclave ";
 			case IVAIEPS:
 				return

@@ -33,6 +33,7 @@ public class Ticket {
 	private Double				subtotal;
 	private Double				iva;
 	private Double				ieps;
+	
 	public Ticket() {
 		super();
 		// TODO Auto-generated constructor stub
