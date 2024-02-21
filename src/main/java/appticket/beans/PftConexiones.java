@@ -81,5 +81,13 @@ public class PftConexiones {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
+	@Override
+	public String toString() {
+		return "{tclave:" + tclave + ", host:" + host + ", puerto:" + puerto + ", servicio:" + servicio
+				+ ", base:" + base + ", driver:" + driver + ", url:" + url + "}";
+	}
+	
+	
 	
 }

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 
 import org.springframework.stereotype.Service;
 
+import appticket.conexion.Conexion;
 import appticket.consultas.Cregion;
 import appticket.interfaces.Iregion;
 import appticket.utilidades.Utilidades;
@@ -19,9 +20,8 @@ public class Mregion implements Iregion{
 		ResultSet 			rs	= null;
 		Utilidades 		    u   = new Utilidades();
 		try {
-			//Class.forName("com.sybase.jdbc4.jdbc.SybDriver");
-			//DriverManager.setLoginTimeout(10);
-			con = DriverManager.getConnection("jdbc:sybase:Tds:201.161.87.102:2638?ServiceName=satback", "dba", "202401z");
+			Conexion 			c 		= new Conexion();	
+			con = c.getConexionS(1);
 			if (con != null) {
 				boolean isNumber = (u.isNullNumber(tienda + ""));
 				if ((!(u.isNull(fecha))) && isNumber) {

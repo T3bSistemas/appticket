@@ -132,7 +132,7 @@ public class Mticket implements Iticket{
 								String tdir			=	rs.getString("tdir");
 								String tncrvendflag	=	rs.getString("tncrvendflag");
 								String temail		=	rs.getString("temail");
-								if(!isNull(tdir) && !isNull(tncrvendflag) && !isNull(temail)) {
+								if(!isNull(tdir) && !isNull(tncrvendflag)/* && !isNull(temail)*/) {
 									ticket.setTicketAdi(claveSAT, tdir, tncrvendflag, temail);
 									List<TicketDetalle> Listdetalle = new ArrayList<TicketDetalle>();;
 									try {

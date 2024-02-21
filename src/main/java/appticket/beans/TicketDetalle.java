@@ -270,6 +270,18 @@ public class TicketDetalle {
 	public void setLclave(String lclave) {
 		this.lclave = lclave;
 	}
+
+
+
+	@Override
+	public String toString() {
+		return "{iclave:" + iclave + ", atmacant:" + atmacant + ", atmventa:" + atmventa + ", ivClave:"
+				+ ivClave + ", ieClave:" + ieClave + ", idesc:" + idesc + ", iunidad:" + iunidad + ", CClaveUnidad:"
+				+ CClaveUnidad + ", CClaveProdServ:" + CClaveProdServ + ", IVfactor:" + IVfactor + ", IEfactor:"
+				+ IEfactor + ", Iva:" + Iva + ", Ieps:" + Ieps + ", valUnit:" + valUnit + ", subtotal:" + subtotal
+				+ ", iepsPrc:" + iepsPrc + ", iepsMont:" + iepsMont + ", ivaPrc:" + ivaPrc + ", ivaMont:" + ivaMont
+				+ ", atmdesc:" + atmdesc + ", gclave:" + gclave + ", lclave:" + lclave + "}";
+	}
 	
 	
 }

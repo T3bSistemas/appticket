@@ -237,5 +237,14 @@ public class Ticket {
 	public void setDetalles(List<TicketDetalle> detalles) {
 		this.detalles = detalles;
 	}
+
+	@Override
+	public String toString() {
+		return "{fechaCompra:" + fechaCompra + ", tienda:" + tienda + ", ticket:" + ticket + ", caja:" + caja
+				+ ", total:" + total + ", region:" + region + ", conexion:" + conexion + ", tipoPago:" + tipoPago
+				+ ", Idturno:" + Idturno + ", tdir:" + tdir + ", tncrvendflag:" + tncrvendflag + ", temail:" + temail
+				+ ", claveSAT:" + claveSAT + ", detalles:" + detalles + ", folio:" + folio + ", uuid:" + uuid + ", pdf:"
+				+ pdf + ", xml:" + xml + ", subtotal:" + subtotal + ", iva:" + iva + ", ieps:" + ieps + "}";
+	}
 	
 }

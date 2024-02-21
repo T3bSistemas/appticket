@@ -75,7 +75,7 @@ public class Domicilio {
 	}
 	@Override
 	public String toString() {
-		return "domicilio [calle=" + calle + ", colonia=" + colonia + ", cp=" + cp + ", estado=" + estado + ", munAlc="
-				+ munAlc + ", numExt=" + numExt + ", numInt=" + numInt + ", pais=" + pais + "]";
+		return "{calle:" + calle + ", colonia:" + colonia + ", cp:" + cp + ", estado:" + estado + ", munAlc:"
+				+ munAlc + ", numExt:" + numExt + ", numInt:" + numInt + ", pais:" + pais + "}";
 	}
 }
