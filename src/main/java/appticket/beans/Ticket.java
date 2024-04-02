@@ -3,6 +3,7 @@ package appticket.beans;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Ticket {
 	private String 				fechaCompra;
 	private Integer 			tienda;
@@ -33,6 +34,7 @@ public class Ticket {
 	private Double				subtotal;
 	private Double				iva;
 	private Double				ieps;
+	private Fclientes 			fclientes;
 	
 	public Ticket() {
 		super();
@@ -40,7 +42,7 @@ public class Ticket {
 	}
 
 	public Ticket(String fechaCompra, Integer tienda, String ticket, String caja, Double total, String tipoPago,
-			int idturno, PftConexiones conexion, String region) {
+			int idturno, PftConexiones conexion, String region, Fclientes fclientes) {
 		super();
 		this.fechaCompra = fechaCompra;
 		this.tienda = tienda;
@@ -52,6 +54,7 @@ public class Ticket {
 		this.Idturno = idturno;
 		this.conexion = conexion;
 		this.region = region;
+		this.fclientes=fclientes;
 		
 	}
 	
@@ -238,13 +241,24 @@ public class Ticket {
 		this.detalles = detalles;
 	}
 
+	public Fclientes getFclientes() {
+		return fclientes;
+	}
+
+	public void setFclientes(Fclientes fclientes) {
+		this.fclientes = fclientes;
+	}
+
 	@Override
 	public String toString() {
-		return "{fechaCompra:" + fechaCompra + ", tienda:" + tienda + ", ticket:" + ticket + ", caja:" + caja
-				+ ", total:" + total + ", region:" + region + ", conexion:" + conexion + ", tipoPago:" + tipoPago
-				+ ", Idturno:" + Idturno + ", tdir:" + tdir + ", tncrvendflag:" + tncrvendflag + ", temail:" + temail
-				+ ", claveSAT:" + claveSAT + ", detalles:" + detalles + ", folio:" + folio + ", uuid:" + uuid + ", pdf:"
-				+ pdf + ", xml:" + xml + ", subtotal:" + subtotal + ", iva:" + iva + ", ieps:" + ieps + "}";
+		return "Ticket [fechaCompra=" + fechaCompra + ", tienda=" + tienda + ", ticket=" + ticket + ", caja=" + caja
+				+ ", total=" + total + ", region=" + region + ", conexion=" + conexion + ", tipoPago=" + tipoPago
+				+ ", Idturno=" + Idturno + ", tdir=" + tdir + ", tncrvendflag=" + tncrvendflag + ", temail=" + temail
+				+ ", claveSAT=" + claveSAT + ", detalles=" + detalles + ", folio=" + folio + ", uuid=" + uuid + ", pdf="
+				+ pdf + ", xml=" + xml + ", subtotal=" + subtotal + ", iva=" + iva + ", ieps=" + ieps + ", fclientes="
+				+ fclientes + "]";
 	}
+	
+	
 	
 }

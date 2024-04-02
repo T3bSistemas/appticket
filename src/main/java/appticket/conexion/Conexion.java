@@ -8,9 +8,21 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
+
 import appticket.beans.PftConexiones;
 
+@Service
 public class Conexion {
+	private static final Logger logger = LoggerFactory.getLogger(Conexion.class);
+	
+	@Autowired
+	Environment env;
+	
 	TimeZone miZonaGMT		= TimeZone.getTimeZone("GMT");
 	Calendar calendarioGMT	= new GregorianCalendar(miZonaGMT);
 	Date	fecha 			= new Date();
@@ -18,6 +30,7 @@ public class Conexion {
 	
 	public Connection getConexionS(int sucursal){
 		return (sucursal==1)?setConnectionSat():setConnectionYema();
+		//return (sucursal==1)?setMMPConnection():setConnectionYema();
 	}
 	
 	public Connection getConexionR(PftConexiones dto) throws ClassNotFoundException, SQLException{      
@@ -28,12 +41,12 @@ public class Conexion {
 		return setConnectionEcom();      
 	} 
 	 
-	private Connection setConnectionReg(PftConexiones dto)  {
+	private Connection setConnectionReg(PftConexiones dto)   {
 		Connection cons = null; 
 		try {	
-		    cons = DriverManager.getConnection(dto.getUrl().trim()+dto.getHost().trim()+":"+dto.getPuerto().trim()+"?ServiceName="+dto.getServicio(), "dba", "5575349");                          
+		    cons = DriverManager.getConnection(dto.getUrl().trim()+dto.getHost().trim()+":"+dto.getPuerto().trim()+"?ServiceName="+dto.getServicio(), "dba", env.getProperty("conexion.vtn.pass"));                          
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("setConnectionReg- Conexion VTN: "+dto.getHost().trim()+" "+e.getMessage());
 		} 
 		return cons;
 	}
@@ -41,9 +54,13 @@ public class Conexion {
 	private Connection setConnectionEcom() throws ClassNotFoundException, SQLException  {
 		Connection cons = null;                    
         try {  
-        	cons = DriverManager.getConnection("jdbc:sybase:Tds:201.161.87.114:2638?ServiceName=master", "dba", password(false)); 
+        	cons = DriverManager.getConnection(env.getProperty("conexion.ecom.host"), env.getProperty("conexion.ecom.user"), password(false)); 
         } catch (SQLException ex) {
-        	cons = DriverManager.getConnection("jdbc:sybase:Tds:201.161.87.114:2638?ServiceName=master", "dba", password(true));                                            
+        	try {
+        		cons = DriverManager.getConnection(env.getProperty("conexion.ecom.host"), env.getProperty("conexion.ecom.user"), password(true));
+			} catch (Exception e) {
+				logger.error("setConnectionEcom- Conexion ECOM: "+e.getMessage());
+			}        	                                            
         }
         return cons;
     }
@@ -51,13 +68,23 @@ public class Conexion {
 	public Connection setConnectionSat(){
 		Connection cons = null;                     
         try {  	
-        	cons = DriverManager.getConnection("jdbc:sybase:Tds:201.161.87.102:2638?ServiceName=satback", "dba", password(false)); 
+        	cons = DriverManager.getConnection(env.getProperty("conexion.acrcloud.host"), env.getProperty("conexion.acrcloud.user"), password(false)); 
 		} catch (SQLException e) {
         	try {
-        		cons = DriverManager.getConnection("jdbc:sybase:Tds:201.161.87.102:2638?ServiceName=satback", "dba",  password(true));                       
+        		cons = DriverManager.getConnection(env.getProperty("conexion.acrcloud.host"), env.getProperty("conexion.acrcloud.user"),  password(true));                       
 			} catch (SQLException ex) {				
-				ex.printStackTrace();
+				logger.error("setConnectionSat- Conexion AcrCloud: "+ex.getMessage());
 			}    	                     
+        }
+        return cons;
+    }
+	
+	public Connection setMMPConnection(){
+		Connection cons = null;                     
+        try {  	
+        	cons = DriverManager.getConnection(env.getProperty("conexion.mmp.host"), env.getProperty("conexion.mmp.user"), env.getProperty("conexion.mmp.pass")); 
+		} catch (SQLException e) {
+			logger.error("setConnectionSat- Conexion MMP: "+e.getMessage());   	                     
         }
         return cons;
     }
@@ -65,15 +92,15 @@ public class Conexion {
 	private Connection setConnectionYema(){    
 		Connection cons = null;                      
         try {
-        	cons = DriverManager.getConnection("jdbc:sybase:Tds:20.29.81.92:2638?ServiceName=yemacore", "dba", "202212aa"); 
+        	cons = DriverManager.getConnection(env.getProperty("conexion.yema.host"), env.getProperty("conexion.yema.user"), env.getProperty("conexion.yema.pass")); 
 		} catch (SQLException ex) {
         	try {
-        		cons = DriverManager.getConnection("jdbc:sybase:Tds:20.29.81.92:2638?ServiceName=yemacore", "dba", password(false)); 
+        		cons = DriverManager.getConnection(env.getProperty("conexion.yema.host"), env.getProperty("conexion.yema.user"), password(false)); 
 			} catch (Exception e) {
 				try {
-					cons = DriverManager.getConnection("jdbc:sybase:Tds:20.29.81.92:2638?ServiceName=yemacore", "dba", password(true)); 
+					cons = DriverManager.getConnection(env.getProperty("conexion.yema.host"), env.getProperty("conexion.yema.user"), password(true)); 
 				} catch (Exception e2) {
-					e2.printStackTrace();
+					logger.error("setConnectionSat- Conexion Yema: "+e2.getMessage());
 				}			
 			}
         	                                           
@@ -113,7 +140,7 @@ public class Conexion {
             	return "";
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("password- Obtener password: "+e.getMessage());
 		}
 		return "";
 	}
@@ -124,7 +151,7 @@ public class Conexion {
 			calendarioGMT.setTime(fecha);
 			month			= calendarioGMT.get(Calendar.MONTH)+1;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("dateFechaToIntMonth- Obtener Formato Fecha: "+e.getMessage());
 		}
 		return month;
 	}
@@ -135,7 +162,7 @@ public class Conexion {
 	    	calendarioGMT.setTime(fecha);
 		    year=calendarioGMT.get(Calendar.YEAR);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("dateFechaToIntYear- Obtener Formato Fecha: "+e.getMessage());
 		}	    
 	    return year;
 	}

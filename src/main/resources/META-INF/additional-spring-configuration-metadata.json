@@ -1,0 +1,72 @@
+{"properties": [
+  {
+    "name": "conexion.ecom.host",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.ecom.host'"
+  },
+  {
+    "name": "conexion.ecom.user",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.ecom.user'"
+  },
+  {
+    "name": "conexion.acrcloud.host",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.acrcloud.host'"
+  },
+  {
+    "name": "conexion.acrcloud.user",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.acrcloud.user'"
+  },
+  {
+    "name": "conexion.yema.host",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.yema.host'"
+  },
+  {
+    "name": "conexion.yema.user",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.yema.user'"
+  },
+  {
+    "name": "conexion.yema.pass",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.yema.pass'"
+  },
+  {
+    "name": "conexion.vtn.pass",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.vtn.pass'"
+  },
+  {
+    "name": "api.appdashboard3b",
+    "type": "java.lang.String",
+    "description": "A description for 'api.appdashboard3b'"
+  },
+  {
+    "name": "api.appfactura",
+    "type": "java.lang.String",
+    "description": "A description for 'api.appfactura'"
+  },
+  {
+    "name": "conexion.mmp.host",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.mmp.host'"
+  },
+  {
+    "name": "conexion.mmp.user",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.mmp.user'"
+  },
+  {
+    "name": "conexion.mmp.pass",
+    "type": "java.lang.String",
+    "description": "A description for 'conexion.mmp.pass'"
+  },
+  {
+    "name": "api.appdashboard3b",
+    "type": "java.lang.String",
+    "description": "A description for 'api.appdashboard3b'"
+  }
+]}
