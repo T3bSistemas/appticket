@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import appticket.beans.Ticket;
 import appticket.modelos.Mticket;
-
+//K9r5n4$R74$$
 @CrossOrigin("*")
 @RestController
 @RequestMapping(path = "/t3b-fact-ticket")
